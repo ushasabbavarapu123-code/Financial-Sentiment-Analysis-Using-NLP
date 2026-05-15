@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Sentiment Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>📊 Financial Sentiment Analysis</h1>
+            <p class="subtitle">Analyze sentiment in financial news and text</p>
+            <div style="margin-top: 20px;">
+                <a href="Article.html" style="text-decoration: none;">
+                    <button class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">📖 Read Article</button>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="input-container">
+                    <h2>Enter Financial Text</h2>
+                    <textarea 
+                        id="textInput" 
+                        placeholder="Paste financial news, market analysis, or company updates here..."
+                        rows="6"
+                    ></textarea>
+                    <div class="input-actions">
+                        <button id="analyzeBtn" class="btn btn-primary">Analyze Sentiment</button>
+                        <button id="clearBtn" class="btn btn-secondary">Clear</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <!-- Sentiment Score Card -->
+                <div class="sentiment-card">
+                    <h3>Sentiment Score</h3>
+                    <div class="sentiment-display">
+                        <div id="sentimentGauge" class="sentiment-gauge">
+                            <canvas id="sentimentChart"></canvas>
+                        </div>
+                        <div class="sentiment-info">
+                            <div class="score-item">
+                                <span class="label">Overall Sentiment:</span>
+                                <span id="sentimentLabel" class="value sentiment-label"></span>
+                            </div>
+                            <div class="score-item">
+                                <span class="label">Confidence:</span>
+                                <span id="confidenceScore" class="value">0%</span>
+                            </div>
+                            <div class="score-breakdown">
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Positive</span>
+                                    <span id="positiveScore" class="breakdown-value">0%</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Neutral</span>
+                                    <span id="neutralScore" class="breakdown-value">0%</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Negative</span>
+                                    <span id="negativeScore" class="breakdown-value">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Keywords Section -->
+                <div class="keywords-section">
+                    <h3>Key Financial Terms Detected</h3>
+                    <div class="keywords-container">
+                        <div class="keyword-category">
+                            <h4>Positive Keywords</h4>
+                            <div id="positiveKeywords" class="keywords-list"></div>
+                        </div>
+                        <div class="keyword-category">
+                            <h4>Negative Keywords</h4>
+                            <div id="negativeKeywords" class="keywords-list"></div>
+                        </div>
+                        <div class="keyword-category">
+                            <h4>Neutral Keywords</h4>
+                            <div id="neutralKeywords" class="keywords-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Chart -->
+                <div class="history-section">
+                    <h3>Sentiment Analysis History</h3>
+                    <canvas id="historyChart" height="80"></canvas>
+                </div>
+
+                <!-- Analysis Details -->
+                <div class="details-section">
+                    <h3>Analysis Details</h3>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Total Words:</span>
+                            <span id="wordCount" class="detail-value">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Financial Terms:</span>
+                            <span id="financialTermsCount" class="detail-value">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Text Length:</span>
+                            <span id="textLength" class="detail-value">0 chars</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Analysis Time:</span>
+                            <span id="analysisTime" class="detail-value">0ms</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state">
+                <p>👇 Enter financial text above to analyze sentiment</p>
+                <div style="margin-top: 30px; padding: 20px; background: rgba(102, 126, 234, 0.08); border-radius: 10px; border: 2px dashed #667eea;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">💡 Try these samples:</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button onclick="setSample1()" style="padding: 10px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; border-radius: 8px; cursor: pointer; color: #10b981; font-weight: 600;">Positive Example</button>
+                        <button onclick="setSample2()" style="padding: 10px; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; border-radius: 8px; cursor: pointer; color: #ef4444; font-weight: 600;">Negative Example</button>
+                        <button onclick="setSample3()" style="padding: 10px; background: rgba(107, 114, 128, 0.2); border: 1px solid #6b7280; border-radius: 8px; cursor: pointer; color: #6b7280; font-weight: 600;">Neutral Example</button>
+                        <button onclick="setSample4()" style="padding: 10px; background: rgba(102, 126, 234, 0.2); border: 1px solid #667eea; border-radius: 8px; cursor: pointer; color: #667eea; font-weight: 600;">Mixed Example</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
